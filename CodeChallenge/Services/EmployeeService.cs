@@ -40,6 +40,26 @@ namespace CodeChallenge.Services
             return null;
         }
 
+        // This will recursively determine the number of reports for the requested employee.
+        public int GetNumberOfReports(string id)
+        {
+            Employee RequestedEmployee;
+            int NumberOfReports;
+
+            RequestedEmployee = _employeeRepository.GetByIdAndIncludeDirectReports(id);
+
+            // Be sure to count the current employee's reports
+            NumberOfReports = RequestedEmployee.DirectReports.Count;
+
+            // Walk through their reports one by one
+            foreach (Employee DirectReport in RequestedEmployee.DirectReports)
+            {
+                NumberOfReports += GetNumberOfReports(DirectReport.EmployeeId);
+            }
+
+            return NumberOfReports;
+        }
+
         public Employee Replace(Employee originalEmployee, Employee newEmployee)
         {
             if(originalEmployee != null)

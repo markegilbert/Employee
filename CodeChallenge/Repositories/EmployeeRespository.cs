@@ -32,6 +32,14 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
+        // Adding a separate method preserves the behavior of the original GetById() method
+        public Employee GetByIdAndIncludeDirectReports(string id)
+        {
+            return _employeeContext.Employees
+                                        .Include(e => e.DirectReports)
+                                        .SingleOrDefault(e => e.EmployeeId == id);
+        }
+
         public Task SaveAsync()
         {
             return _employeeContext.SaveChangesAsync();
