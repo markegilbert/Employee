@@ -1,11 +1,11 @@
-﻿using CodeChallenge.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using NSubstitute;
-using CodeChallenge.Controllers;
-using Microsoft.Extensions.Logging;
+﻿using CodeChallenge.Controllers;
+using CodeChallenge.Models;
 using CodeChallenge.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
+using System;
 
 namespace CodeCodeChallenge.Tests.Unit
 {
