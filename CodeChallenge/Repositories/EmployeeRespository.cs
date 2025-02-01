@@ -32,7 +32,8 @@ namespace CodeChallenge.Repositories
             return _employeeContext.Employees.SingleOrDefault(e => e.EmployeeId == id);
         }
 
-        // Adding a separate method preserves the behavior of the original GetById() method
+        // Adding a separate method that loads the DirectReports property preserves the behavior
+        // of the original GetById() method.
         public Employee GetByIdAndIncludeDirectReports(string id)
         {
             return _employeeContext.Employees

@@ -24,14 +24,23 @@ namespace CodeCodeChallenge.Tests.Integration
     public class ReportingStructureControllerTests
     {
         // There is test-data bleeding over from the EmployeeControllerTests.  That test suite modifies the in-memory data,
-        // so if I were to use the same IDs for testing here, this suite would be dependent on it.
+        // so if I were to use the same IDs for testing here, I'd only see the changes.  That would make this suite dependent
+        // on that one.
         //
-        // If I move ReportingStructureControllerTests to be above EmployeeControllerTests in the list, then 
-        // ReportingStructureControllerTests runs first against a pristine data set, and they will all pass.  A couple of
-        // ways to do this are through changing the namespace from CodeCodeChallenge.Tests.Integration to something like:
+        // If I move ReportingStructureControllerTests to be above EmployeeControllerTests in the list alphabetically, then 
+        // ReportingStructureControllerTests runs first against a pristine data set, and all the tests shown here will pass.
+        // A couple of ways to re-sort these are through changing the namespace from CodeCodeChallenge.Tests.Integration to
+        // something like:
         //      CodeChallenge.Tests.Integration
         //      CodeCodeChallenge.Tests
         // Either will move them above CodeCodeChallenge.Tests.Integration.EmployeeControllerTests in the list.
+        //
+        // I was not successful in finding a way to reset the in-memory database to the original data.  I tried using the
+        // same logic found in App.SeedEmployeeDB(), calling that in the InitializeClass() method here, but that didn't work.
+        // I suspect I would have to re-inject that dependency before the controllers will take advantage of them.
+        //
+        // In the end, I opted to test the ReportingStructureController logic and the new EmployeeService.GetNumberOfReports()
+        // method separately, rather than doing an integration test modeled after EmployeeControllerTests.
         #region " Original Test Code "
         //private static HttpClient _httpClient;
         //private static TestServer _testServer;
@@ -92,9 +101,9 @@ namespace CodeCodeChallenge.Tests.Integration
         }
 
         [TestMethod]
-        [DataRow("16a596ae-edd3-4847-99fe-c4518e82c86f", "John", 4)]
-        [DataRow("b7839309-3348-463b-a7e3-5de1c168beb3", "Paul", 0)]
-        [DataRow("03aa1462-ffa9-4978-901b-7c001562cf6f", "Ringo", 2)]
+        [DataRow("B9B37B3A-B50F-4100-B9AA-56E8C29C7B9C", "Han", 0)]
+        [DataRow("36575E65-3FF7-411C-BBC7-DC471C95A958", "Luke", 2)]
+        [DataRow("62DC8AE0-39D1-4F26-9333-363B89513116", "Leia", 1)]
         public void GetReportingStructureByEmployeeId_ValidEmployeeRequested_ReturnsOk(String TestEmployeeID, String TestFirstName, int TestNumberOfReports)
         {
             // Arrange
