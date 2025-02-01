@@ -32,6 +32,9 @@ namespace CodeCodeChallenge.Tests.Integration
         {
             _httpClient.Dispose();
             _testServer.Dispose();
+
+            // TODO: This should delete the in-memory database so changed made to it by this test suite don't leak to other test suites.
+            //       This can be accomplished using myContext.Database.EnsureDeleted();
         }
 
         [TestMethod]

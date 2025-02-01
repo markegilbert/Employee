@@ -47,6 +47,7 @@ namespace CodeChallenge.Services
             int NumberOfReports;
 
             RequestedEmployee = _employeeRepository.GetByIdAndIncludeDirectReports(id);
+            if (RequestedEmployee == null) { return 0; }
 
             // Be sure to count the current employee's reports
             NumberOfReports = RequestedEmployee.DirectReports.Count;

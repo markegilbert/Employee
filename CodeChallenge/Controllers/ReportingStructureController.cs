@@ -1,6 +1,5 @@
 ﻿using CodeChallenge.Models;
 using CodeChallenge.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -23,8 +22,6 @@ namespace CodeChallenge.Controllers
         }
 
 
-        // TODO: Unit tests for this endpoint
-        // TODO: Mock out GetById and GetNumberOfReports methods
         [HttpGet("{id}", Name = "getReportingStructureByEmployeeById")]
         public IActionResult GetReportingStructureByEmployeeId(String id)
         {
@@ -48,7 +45,7 @@ namespace CodeChallenge.Controllers
             //
             //      employee.DirectReports = null;
             //
-            // If that is the case, this resolution should definitely get unit test coverage.
+            // If that is the case, a unit test should be added to cover that modification.
 
 
             // Assemble the response object

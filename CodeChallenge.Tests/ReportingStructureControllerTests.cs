@@ -12,67 +12,20 @@ namespace CodeCodeChallenge.Tests.Unit
     [TestClass]
     public class ReportingStructureControllerTests
     {
-        // There is test-data bleeding over from the EmployeeControllerTests.  That test suite modifies the in-memory data,
-        // so if I were to use the same IDs for testing here, I'd only see the changes.  That would make this suite dependent
-        // on that one.
+        // There is test-data leaking over from the EmployeeControllerTests.  That test suite modifies the in-memory data,
+        // so if I were to use the same IDs for testing here with no changes to the code, those changes would interfere with
+        // the tests here.  I.e., this suite would be dependent on that one.
         //
-        // If I move ReportingStructureControllerTests to be above EmployeeControllerTests in the list alphabetically, then 
-        // ReportingStructureControllerTests runs first against a pristine data set, and all the tests shown here will pass.
-        // A couple of ways to re-sort these are through changing the namespace from CodeCodeChallenge.Tests.Integration to
-        // something like:
-        //      CodeChallenge.Tests.Integration
-        //      CodeCodeChallenge.Tests
-        // Either will move them above CodeCodeChallenge.Tests.Integration.EmployeeControllerTests in the list.
+        // Initially, I didn't find a way to reset the in-memory database to avoid the data leakage, so I separated the
+        // integration tests for ReportingStructureController into 1) unit tests of the controller using mock objects,
+        // and 2) unit tests of the new EmployeeService.GetNumberOfReports() method.
         //
-        // I was not successful in finding a way to reset the in-memory database to the original data.  I tried using the
-        // same logic found in App.SeedEmployeeDB(), calling that in the InitializeClass() method here, but that didn't work.
-        // I suspect I would have to re-inject that dependency before the controllers will take advantage of them.
-        //
-        // In the end, I opted to test the ReportingStructureController logic and the new EmployeeService.GetNumberOfReports()
-        // method separately, rather than doing an integration test modeled after EmployeeControllerTests.
-        #region " Original Test Code "
-        //private static HttpClient _httpClient;
-        //private static TestServer _testServer;
-
-        //[ClassInitialize]
-        //// Attribute ClassInitialize requires this signature
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
-        //public static void InitializeClass(TestContext context)
-        //{
-        //    _testServer = new TestServer();
-        //    _httpClient = _testServer.NewClient();
-        //}
-
-        //[ClassCleanup]
-        //public static void CleanUpTest()
-        //{
-        //    _httpClient.Dispose();
-        //    _testServer.Dispose();
-        //}
-
-
-        //[TestMethod]
-        //public void GetReportingStructureByEmployeeId_ValidEmployeeRequested_ReturnsOk()
-        //{
-        //    // Arrange
-
-        //    var employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
-        //    var expectedFirstName = "John";
-        //    var expectedLastName = "Lennon";
-        //    var expectedNumberOfReports = 4;
-
-        //    // Execute
-        //    var getRequestTask = _httpClient.GetAsync($"api/reportingstructure/{employeeId}");
-        //    var response = getRequestTask.Result;
-
-        //    // Assert
-        //    Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        //    var reportingStructure = response.DeserializeContent<ReportingStructure>();
-        //    Assert.AreEqual(expectedFirstName, reportingStructure.Employee.FirstName, "FirstName didn't match as expected");
-        //    Assert.AreEqual(expectedLastName, reportingStructure.Employee.LastName, "LastName didn't match as expected");
-        //    Assert.AreEqual(expectedNumberOfReports, reportingStructure.NumberOfReports, "NumberOfReports didn't match as expected");
-        //}
-        #endregion
+        // I did eventually find a way to reset the database between test suites.  That reset logic can be found in the
+        // EmployeeServiceTests.InitializeClass() and CleanupClass() methods.
+        // 
+        // I decided to keep the ReportingStructureControllerTests structure as it was since it was a valid test of
+        // the controller logic.  Combined with the EmployeeServiceTests suite, we still have full test coverage of the
+        // new endpoint all the way down to the database level.
 
 
         private static ILogger<ReportingStructureController> _logger;
