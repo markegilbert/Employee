@@ -77,8 +77,8 @@ namespace CodeCodeChallenge.Tests.Unit
 
         private static ILogger<ReportingStructureController> _logger;
         private static IEmployeeService _employeeService;
-        private static ReportingStructureController _controller;
-        private static IActionResult _rawResponse;
+        private ReportingStructureController _controller;
+        private IActionResult _rawResponse;
 
 
         [ClassInitialize]
@@ -88,6 +88,11 @@ namespace CodeCodeChallenge.Tests.Unit
         {
             _logger = Substitute.For<ILogger<ReportingStructureController>>();
             _employeeService = Substitute.For<IEmployeeService>();
+        }
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
             _controller = null;
             _rawResponse = null;
         }
