@@ -1,24 +1,13 @@
-﻿using CodeChallenge.Data;
-using CodeChallenge.Models;
-using CodeCodeChallenge.Tests.Integration.Extensions;
-using CodeCodeChallenge.Tests.Integration.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using CodeChallenge.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using NSubstitute;
 using CodeChallenge.Controllers;
 using Microsoft.Extensions.Logging;
 using CodeChallenge.Services;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CodeCodeChallenge.Tests.Integration
+namespace CodeCodeChallenge.Tests.Unit
 {
     [TestClass]
     public class ReportingStructureControllerTests
@@ -89,6 +78,7 @@ namespace CodeCodeChallenge.Tests.Integration
         private static ILogger<ReportingStructureController> _logger;
         private static IEmployeeService _employeeService;
         private static ReportingStructureController _controller;
+        private static IActionResult _rawResponse;
 
 
         [ClassInitialize]
@@ -98,6 +88,8 @@ namespace CodeCodeChallenge.Tests.Integration
         {
             _logger = Substitute.For<ILogger<ReportingStructureController>>();
             _employeeService = Substitute.For<IEmployeeService>();
+            _controller = null;
+            _rawResponse = null;
         }
 
         [TestMethod]
@@ -106,6 +98,9 @@ namespace CodeCodeChallenge.Tests.Integration
         [DataRow("62DC8AE0-39D1-4F26-9333-363B89513116", "Leia", 1)]
         public void GetReportingStructureByEmployeeId_ValidEmployeeRequested_ReturnsOk(String TestEmployeeID, String TestFirstName, int TestNumberOfReports)
         {
+            Object rawValue;
+            ReportingStructure actualValue;
+
             // Arrange
             _employeeService.GetById(TestEmployeeID).Returns(new Employee() { EmployeeId = TestEmployeeID, FirstName = TestFirstName });
             _employeeService.GetNumberOfReports(TestEmployeeID).Returns(TestNumberOfReports);
@@ -113,18 +108,31 @@ namespace CodeCodeChallenge.Tests.Integration
 
 
             // Execute
-            // TODO: Shouldn't assume that this comes back as OK
-            var response = (OkObjectResult) _controller.GetReportingStructureByEmployeeId(TestEmployeeID);
+            _rawResponse = _controller.GetReportingStructureByEmployeeId(TestEmployeeID);
 
 
             // Assert
-            Assert.AreEqual(200, response.StatusCode);
-            var reportingStructure = (ReportingStructure)response.Value;
-            Assert.AreEqual(TestFirstName, reportingStructure.Employee.FirstName, "FirstName didn't match as expected");
-            Assert.AreEqual(TestNumberOfReports, reportingStructure.NumberOfReports, "NumberOfReports didn't match as expected");
+            Assert.IsTrue(_rawResponse.GetType().Equals(typeof(OkObjectResult)), "The response should have been an OK response");
+
+            rawValue = ((OkObjectResult)_rawResponse).Value;
+            Assert.IsNotNull(rawValue, "The response's value should not have been null");
+
+            actualValue = (ReportingStructure)rawValue;
+            Assert.AreEqual(TestFirstName, actualValue.Employee.FirstName, "FirstName didn't match as expected");
+            Assert.AreEqual(TestNumberOfReports, actualValue.NumberOfReports, "NumberOfReports didn't match as expected");
+        }
+        [TestMethod]
+        public void GetReportingStructureByEmployeeId_InvalidEmployeeRequested_ReturnsNotFound()
+        {
+            // Arrange
+            _controller = new ReportingStructureController(_logger, _employeeService);
+
+            // Execute
+            _rawResponse = _controller.GetReportingStructureByEmployeeId("BAD-ID");
+
+            // Assert
+            Assert.IsTrue(_rawResponse.GetType().Equals(typeof(NotFoundResult)), "The response should have been a Not Found response");
         }
 
-
-        // TODO: Add a test for an invalid ID
     }
 }
