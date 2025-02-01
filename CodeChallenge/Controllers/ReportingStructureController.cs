@@ -16,7 +16,9 @@ namespace CodeChallenge.Controllers
 
         public ReportingStructureController(ILogger<ReportingStructureController> logger, IEmployeeService employeeService)
         {
-            // TODO: Validate these
+            if (logger == null) { throw new ArgumentNullException($"The parameter '{nameof(logger)}' was null or otherwise invalid"); }
+            if (employeeService == null) { throw new ArgumentNullException($"The parameter '{nameof(employeeService)}' was null or otherwise invalid"); }
+
             _logger = logger;
             _employeeService = employeeService;
         }
@@ -39,9 +41,11 @@ namespace CodeChallenge.Controllers
             numberOfReports = _employeeService.GetNumberOfReports(id);
 
 
-            // I found that calling _employeeService.GetNumberOfReports will also update the local employee's DirectReport property, and flesh
-            // out the entire tree structure, down to the leaves.  Previously, the employee.DirectReports property was null.  Now it's either a 
-            // list of Employee objects or an empty list.  If this side effect is problematic, it can be resolved as follows:
+            // TODO: I found that calling _employeeService.GetNumberOfReports will also update the local employee's DirectReport property, and flesh
+            // out the entire tree structure down to the leaves.  Previously, the employee.DirectReports property was null; now it's either a 
+            // list of Employee objects or an empty list.
+            //
+            // If this side effect is problematic, it can be resolved as follows:
             //
             //      employee.DirectReports = null;
             //

@@ -32,6 +32,7 @@ namespace CodeCodeChallenge.Tests.Unit
         private static IEmployeeService _employeeService;
         private ReportingStructureController _controller;
         private IActionResult _rawResponse;
+        private ArgumentNullException _argumentNullException;
 
 
         [ClassInitialize]
@@ -48,7 +49,24 @@ namespace CodeCodeChallenge.Tests.Unit
         {
             _controller = null;
             _rawResponse = null;
+            _argumentNullException = null;
         }
+
+
+
+        [TestMethod]
+        public void InstantiateClass_LoggerIsNull_ExceptionThrown()
+        {
+            _argumentNullException = Assert.ThrowsException<ArgumentNullException>(() => new ReportingStructureController(null, _employeeService));
+            Assert.IsTrue(_argumentNullException.Message.Contains("'logger'"), "Exception didn't reference the correct parameter");
+        }
+        [TestMethod]
+        public void InstantiateClass_EmployeeServiceIsNull_ExceptionThrown()
+        {
+            _argumentNullException = Assert.ThrowsException<ArgumentNullException>(() => new ReportingStructureController(_logger, null));
+            Assert.IsTrue(_argumentNullException.Message.Contains("'employeeService'"), "Exception didn't reference the correct parameter");
+        }
+
 
         [TestMethod]
         [DataRow("B9B37B3A-B50F-4100-B9AA-56E8C29C7B9C", "Han", 0)]
