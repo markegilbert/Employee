@@ -17,9 +17,9 @@ namespace CodeChallenge.Controllers
 
         public CompensationController(ILogger<CompensationController> logger, IEmployeeService employeeService, ICompensationService compensationService)
         {
-            // TODO: Validate these
-            //if (logger == null) { throw new ArgumentNullException($"The parameter '{nameof(logger)}' was null or otherwise invalid"); }
-            //if (employeeService == null) { throw new ArgumentNullException($"The parameter '{nameof(employeeService)}' was null or otherwise invalid"); }
+            if (logger == null) { throw new ArgumentNullException($"The parameter '{nameof(logger)}' was null or otherwise invalid"); }
+            if (employeeService == null) { throw new ArgumentNullException($"The parameter '{nameof(employeeService)}' was null or otherwise invalid"); }
+            if (compensationService == null) { throw new ArgumentNullException($"The parameter '{nameof(compensationService)}' was null or otherwise invalid"); }
 
             _logger = logger;
             _employeeService = employeeService;
