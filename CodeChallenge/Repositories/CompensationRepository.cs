@@ -10,13 +10,13 @@ namespace CodeChallenge.Repositories
 {
     public class CompensationRepository : ICompensationRepository
     {
-        private readonly CompensationContext _compensationContext;
+        private readonly EmployeeContext _employeeContext;
         private readonly ILogger<ICompensationRepository> _logger;
 
-        public CompensationRepository(ILogger<ICompensationRepository> logger, CompensationContext compensationContext)
+        public CompensationRepository(ILogger<ICompensationRepository> logger, EmployeeContext employeeContext)
         {
             // TODO: Validate these
-            _compensationContext = compensationContext;
+            _employeeContext = employeeContext;
             _logger = logger;
         }
 
@@ -27,21 +27,23 @@ namespace CodeChallenge.Repositories
 
             // Ensure that the new Compensation record has a valid ID of its own.
             compensation.CompensationId = Guid.NewGuid().ToString();
-            _compensationContext.Compensations.Add(compensation);
+
+            _employeeContext.Compensations.Add(compensation);
+
             return compensation;
         }
 
         public Compensation GetByEmployeeId(string employeeId)
         {
             // TODO: Return only the most recent record where the effective date is equal to or less than today
-            return _compensationContext.Compensations
+            return _employeeContext.Compensations
                 .Include(c => c.Employee)
-                .SingleOrDefault(c => c.Employee.EmployeeId == employeeId);
+                .SingleOrDefault(c => c.EmployeeId == employeeId);
         }
 
         public Task SaveAsync()
         {
-            return _compensationContext.SaveChangesAsync();
+            return _employeeContext.SaveChangesAsync();
         }
     }
 }

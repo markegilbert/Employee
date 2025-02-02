@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodeChallenge.Models
 {
@@ -9,6 +10,7 @@ namespace CodeChallenge.Models
         public DateOnly EffectiveDate { get; set; }
 
         public String EmployeeId { get; set; }
+        [ForeignKey("EmployeeId")]
         public Employee Employee { get; set; }
     }
 }

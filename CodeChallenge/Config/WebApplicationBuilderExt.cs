@@ -15,11 +15,6 @@ namespace CodeChallenge.Config
             {
                 options.UseInMemoryDatabase(DB_NAME);
             });
-
-            builder.Services.AddDbContext<CompensationContext>(options =>
-            {
-                options.UseInMemoryDatabase(DB_NAME);
-            });
         }
 
     }

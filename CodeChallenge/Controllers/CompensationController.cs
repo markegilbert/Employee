@@ -1,6 +1,5 @@
 ﻿using CodeChallenge.Models;
 using CodeChallenge.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -49,19 +48,16 @@ namespace CodeChallenge.Controllers
         {
             Employee employee;
 
-            _logger.LogDebug($"Received compensation create request for employee ID '{compensation.Employee.EmployeeId}'");
+            _logger.LogDebug($"Received compensation create request for employee ID '{compensation.EmployeeId}'");
 
-            employee = _employeeService.GetById(compensation.Employee.EmployeeId);
+            employee = _employeeService.GetById(compensation.EmployeeId);
             if (employee == null)
                 return NotFound();
 
-
-            // TODO: Is this an acceptable way to force compensation.Employee to be populated?
-            // TODO: Does it matter that when this record is retrieved, compensation.Employee.DirectReports is null and compensation.Employee.Compensations is a list that only contains "null"?
-            compensation.Employee = employee;
             compensation = _compensationService.Create(compensation);
 
             return CreatedAtRoute("getCompensationByEmployeeById", new { compensation.Employee.EmployeeId }, compensation);
+            //return Ok(compensation);
         }
 
     }
