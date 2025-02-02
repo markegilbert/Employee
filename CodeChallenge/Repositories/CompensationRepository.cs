@@ -1,5 +1,6 @@
 ﻿using CodeChallenge.Data;
 using CodeChallenge.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -23,6 +24,9 @@ namespace CodeChallenge.Repositories
         public Compensation Add(Compensation compensation)
         {
             // TODO: Validate the parameters
+
+            // Ensure that the new Compensation record has a valid ID of its own.
+            compensation.CompensationId = Guid.NewGuid().ToString();
             _compensationContext.Compensations.Add(compensation);
             return compensation;
         }
@@ -30,7 +34,9 @@ namespace CodeChallenge.Repositories
         public Compensation GetByEmployeeId(string employeeId)
         {
             // TODO: Return only the most recent record where the effective date is equal to or less than today
-            return _compensationContext.Compensations.SingleOrDefault(c => c.Employee.EmployeeId == employeeId);
+            return _compensationContext.Compensations
+                .Include(c => c.Employee)
+                .SingleOrDefault(c => c.Employee.EmployeeId == employeeId);
         }
 
         public Task SaveAsync()

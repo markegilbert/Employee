@@ -1,6 +1,7 @@
 ﻿using System;
 
 using CodeChallenge.Data;
+using CodeChallenge.Helpers;
 using CodeChallenge.Repositories;
 using CodeChallenge.Services;
 
@@ -47,7 +48,11 @@ namespace CodeChallenge.Config
             services.AddScoped<ICompensationService, CompensationService>();
             services.AddScoped<ICompensationRepository, CompensationRepository>();
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+                });
         }
 
         private void SeedEmployeeDB()

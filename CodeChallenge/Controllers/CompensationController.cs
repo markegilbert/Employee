@@ -52,6 +52,8 @@ namespace CodeChallenge.Controllers
             Employee employee;
 
             employee = _employeeService.GetById(compensation.Employee.EmployeeId);
+            if (employee == null)
+                return NotFound();
 
             compensation = _compensationService.Create(compensation);
 
