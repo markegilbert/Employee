@@ -50,7 +50,7 @@ namespace CodeCodeChallenge.Tests.Integration
             _argumentNullException = null;
             _testCompensation = null;
             _actualCompensation = null;
-            _employeeId = null;
+            _employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
         }
 
         [TestCleanup]
@@ -59,6 +59,7 @@ namespace CodeCodeChallenge.Tests.Integration
             // Clear out any Compensation records added in the previous test so they don't leak into the next one.
             // Source: https://stackoverflow.com/questions/10448684/how-should-i-remove-all-elements-in-a-dbset
             _employeeContext.Compensations.RemoveRange(_employeeContext.Compensations);
+            _employeeContext.SaveChanges();
         }
 
 
@@ -93,7 +94,6 @@ namespace CodeCodeChallenge.Tests.Integration
         public void Create_ValidData_NewRecordIsSaved()
         {
             // Arrange
-            _employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
             _testCompensation = new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = DateOnly.Parse("2025-01-15") };
 
             // Execute
@@ -125,7 +125,6 @@ namespace CodeCodeChallenge.Tests.Integration
         public void Create_SalaryIsNegative_RecordIsNotSaved()
         {
             // Arrange
-            _employeeId = "16a596ae-edd3-4847-99fe-c4518e82c86f";
             _testCompensation = new Compensation() { EmployeeId = _employeeId, Salary = -123.45F, EffectiveDate = DateOnly.Parse("2025-01-15") };
 
             // Execute
@@ -136,6 +135,95 @@ namespace CodeCodeChallenge.Tests.Integration
             Assert.IsNull(_actualCompensation, "Nothing should have been saved");
         }
 
+
+        [TestMethod]
+        public void GetByEmployeeId_NoCompensationAdded_NullReturned()
+        {
+            // Arrange
+
+            // Execute
+            _actualCompensation = _compensationService.GetByEmployeeId(_employeeId);
+
+            // Assert
+            Assert.IsNull(_actualCompensation, "Nothing should have been retrieved");
+        }
+        [TestMethod]
+        public void GetByEmployeeId_OneEffectiveDatedInThePast_ThatRecordReturned()
+        {
+            // Arrange
+            DateOnly yesterday = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = yesterday });
+
+            // Execute
+            _actualCompensation = _compensationService.GetByEmployeeId(_employeeId);
+
+            // Assert
+            Assert.IsNotNull(_actualCompensation, "A record should have been retrieved");
+            Assert.AreEqual(yesterday, _actualCompensation.EffectiveDate, "The wrong record was returned");
+        }
+        [TestMethod]
+        public void GetByEmployeeId_TwoValidRecords_OneEffectiveDatedInTheFuture_OneEffectiveDatedInThePast_ThePastOneIsReturned()
+        {
+            // Arrange
+            DateOnly yesterday = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+            DateOnly tomorrow = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = yesterday });
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = tomorrow });
+
+            // Execute
+            _actualCompensation = _compensationService.GetByEmployeeId(_employeeId);
+
+            // Assert
+            Assert.IsNotNull(_actualCompensation, "A record should have been retrieved");
+            Assert.AreEqual(yesterday, _actualCompensation.EffectiveDate, "The wrong record was returned");
+        }
+        [TestMethod]
+        public void GetByEmployeeId_TwoValidRecords_OneEffectiveDatedInTheFuture_OneEffectiveDatedToday_TodaysRecordIsReturned()
+        {
+            // Arrange
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            DateOnly tomorrow = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = today });
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = tomorrow });
+
+            // Execute
+            _actualCompensation = _compensationService.GetByEmployeeId(_employeeId);
+
+            // Assert
+            Assert.IsNotNull(_actualCompensation, "A record should have been retrieved");
+            Assert.AreEqual(today, _actualCompensation.EffectiveDate, "The wrong record was returned");
+        }
+        [TestMethod]
+        public void GetByEmployeeId_TwoValidRecords_BothEffectiveDatedInTheFuture_NullReturned()
+        {
+            // Arrange
+            DateOnly tomorrow = DateOnly.FromDateTime(DateTime.Today.AddDays(1));
+            DateOnly dayAfterTomorrow = DateOnly.FromDateTime(DateTime.Today.AddDays(2));
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = tomorrow });
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = dayAfterTomorrow });
+
+            // Execute
+            _actualCompensation = _compensationService.GetByEmployeeId(_employeeId);
+
+            // Assert
+            Assert.IsNull(_actualCompensation, "Nothing should have been retrieved");
+        }
+        [TestMethod]
+        public void GetByEmployeeId_TwoValidRecords_BothEffectiveDatedInThePast_TheMostRecentOneReturned()
+        {
+            // Arrange
+            DateOnly yesterday = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+            DateOnly dayBeforeYesterday = DateOnly.FromDateTime(DateTime.Today.AddDays(-2));
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = yesterday });
+            _compensationService.Create(new Compensation() { EmployeeId = _employeeId, Salary = 123.45F, EffectiveDate = dayBeforeYesterday });
+
+            // Execute
+            _actualCompensation = _compensationService.GetByEmployeeId(_employeeId);
+
+            // Assert
+            Assert.IsNotNull(_actualCompensation, "A record should have been retrieved");
+            Assert.AreEqual(yesterday, _actualCompensation.EffectiveDate, "The wrong record was returned");
+        }
 
     }
 }

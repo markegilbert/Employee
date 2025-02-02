@@ -33,10 +33,12 @@ namespace CodeChallenge.Repositories
 
         public Compensation GetByEmployeeId(string employeeId)
         {
-            // TODO: Return only the most recent record where the effective date is equal to or less than today
+            // Return only the most recent record where the effective date is equal to or less than today
             return _employeeContext.Compensations
                 .Include(c => c.Employee)
-                .SingleOrDefault(c => c.EmployeeId == employeeId);
+                .Where(c => c.EffectiveDate <= DateOnly.FromDateTime(DateTime.Today) && c.EmployeeId == employeeId)
+                .OrderByDescending(c => c.EffectiveDate)
+                .FirstOrDefault();
         }
 
         public Task SaveAsync()
