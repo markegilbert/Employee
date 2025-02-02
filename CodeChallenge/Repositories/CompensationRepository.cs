@@ -15,7 +15,9 @@ namespace CodeChallenge.Repositories
 
         public CompensationRepository(ILogger<ICompensationRepository> logger, EmployeeContext employeeContext)
         {
-            // TODO: Validate these
+            if (logger == null) { throw new ArgumentNullException($"The parameter '{nameof(logger)}' was null or otherwise invalid"); }
+            if (employeeContext == null) { throw new ArgumentNullException($"The parameter '{nameof(employeeContext)}' was null or otherwise invalid"); }
+
             _employeeContext = employeeContext;
             _logger = logger;
         }
