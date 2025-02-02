@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Text.Json.Serialization;
 using CodeChallenge.Data;
 using CodeChallenge.Helpers;
 using CodeChallenge.Repositories;
@@ -51,7 +51,15 @@ namespace CodeChallenge.Config
             services.AddControllers()
                 .AddJsonOptions(options =>
                 {
+                    // This is needed to allow .NET 6 to serialize/deserialize DateOnly properties.
                     options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+                })
+                .AddJsonOptions(options =>
+                {
+                    // This is needed to prevent EF from trying to follow the object references between
+                    // Employee and Compensation indefinitely.
+                    // Source: https://stackoverflow.com/questions/59199593/net-core-3-0-possible-object-cycle-was-detected-which-is-not-supported
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 });
         }
 

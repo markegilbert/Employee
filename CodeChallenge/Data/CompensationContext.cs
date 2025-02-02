@@ -11,5 +11,15 @@ namespace CodeChallenge.Data
         }
 
         public DbSet<Compensation> Compensations { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Compensation>()
+                .HasOne(c => c.Employee)
+                .WithMany(c => c.Compensations)
+                .HasForeignKey(c => c.EmployeeId)
+                .IsRequired();
+        }
+
     }
 }
