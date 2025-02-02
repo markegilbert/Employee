@@ -23,10 +23,8 @@ namespace CodeChallenge.Repositories
 
         public Compensation Add(Compensation compensation)
         {
-            // TODO: Validate the parameters
-
-            // Ensure that the new Compensation record has a valid ID of its own.
-            compensation.CompensationId = Guid.NewGuid().ToString();
+            // Make sure the Employee actually exists before saving the new compensation record
+            if (_employeeContext.Employees.SingleOrDefault(c => c.EmployeeId == compensation.EmployeeId) == null) { return null; }
 
             _employeeContext.Compensations.Add(compensation);
 

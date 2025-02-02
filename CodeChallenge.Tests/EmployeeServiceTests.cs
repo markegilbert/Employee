@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 
 
-namespace CodeCodeChallenge.Tests.Unit
+namespace CodeCodeChallenge.Tests.Integration
 {
     [TestClass]
     public class EmployeeServiceTests

@@ -57,7 +57,6 @@ namespace CodeChallenge.Controllers
             compensation = _compensationService.Create(compensation);
 
             return CreatedAtRoute("getCompensationByEmployeeById", new { compensation.Employee.EmployeeId }, compensation);
-            //return Ok(compensation);
         }
 
     }

@@ -13,7 +13,9 @@ namespace CodeChallenge.Services
 
         public CompensationService(ILogger<CompensationService> logger, ICompensationRepository compensationRepository)
         {
-            // TODO: Validate these
+            if (logger == null) { throw new ArgumentNullException($"The parameter '{nameof(logger)}' was null or otherwise invalid"); }
+            if (compensationRepository == null) { throw new ArgumentNullException($"The parameter '{nameof(compensationRepository)}' was null or otherwise invalid"); }
+
             _compensationRepository = compensationRepository;
             _logger = logger;
         }
@@ -22,15 +24,18 @@ namespace CodeChallenge.Services
 
         public Compensation Create(Compensation compensation)
         {
-            // TODO: Don't allow negative salaries
-            if (compensation != null)
-            {
-                _compensationRepository.Add(compensation);
-                _compensationRepository.SaveAsync().Wait();
-            }
+            if (compensation == null) { return null; }
+            if (compensation.Salary < 0) { return null; }
+
+            // Ensure that the new Compensation record has a valid ID of its own before trying to save it.
+            compensation.CompensationId = Guid.NewGuid().ToString();
+            if (_compensationRepository.Add(compensation) == null) { return null; }
+
+            _compensationRepository.SaveAsync().Wait();
 
             return compensation;
         }
+
 
         public Compensation GetByEmployeeId(string employeeId)
         {
