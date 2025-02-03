@@ -1,15 +1,11 @@
 ﻿using CodeChallenge.Controllers;
-using CodeChallenge.Models;
 using CodeChallenge.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace CodeCodeChallenge.Tests.Unit
 {

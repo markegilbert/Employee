@@ -28,6 +28,12 @@ namespace CodeChallenge.Repositories
             // Make sure the Employee actually exists before saving the new compensation record
             if (_employeeContext.Employees.SingleOrDefault(c => c.EmployeeId == compensation.EmployeeId) == null) { return null; }
 
+
+            // TODO: Currently, this method will allow duplicates by Employee ID / Effective Date.  Consider extending this to an upsert
+            //       where if the Employee ID and Effective Date of the new compensation record matches one that is already on file, update
+            //       it; otherwise add the new one.
+
+
             _employeeContext.Compensations.Add(compensation);
 
             return compensation;

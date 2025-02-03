@@ -4,9 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace CodeChallenge.Helpers
 {
-
-
-
     // .NET 6 does not provide serialization for a DateOnly datatype OOTB, so this class takes care of that.
     // Please also see App.AddServices() where this class is registered.
     // Source: https://stackoverflow.com/questions/74246482/system-notsupportedexception-serialization-and-deserialization-of-system-dateo

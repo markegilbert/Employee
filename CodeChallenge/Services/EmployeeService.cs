@@ -52,7 +52,7 @@ namespace CodeChallenge.Services
             // Be sure to count the current employee's reports
             NumberOfReports = RequestedEmployee.DirectReports.Count;
 
-            // Walk through their reports one by one
+            // Walk through their reports one by one, and add the indirect reports to the total
             foreach (Employee DirectReport in RequestedEmployee.DirectReports)
             {
                 NumberOfReports += GetNumberOfReports(DirectReport.EmployeeId);

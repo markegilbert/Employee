@@ -29,11 +29,12 @@ namespace CodeChallenge.Controllers
         {
             ReportingStructure reportingStructure;
             int numberOfReports;
+            Employee employee;
 
             _logger.LogDebug($"Received reporting structure get request for employee '{id}'");
 
             // Get the employee requested
-            var employee = _employeeService.GetById(id);
+            employee = _employeeService.GetById(id);
             if (employee == null)
                 return NotFound();
 
@@ -42,14 +43,12 @@ namespace CodeChallenge.Controllers
 
 
             // TODO: I found that calling _employeeService.GetNumberOfReports will also update the local employee's DirectReport property, and flesh
-            // out the entire tree structure down to the leaves.  Previously, the employee.DirectReports property was null; now it's either a 
-            // list of Employee objects or an empty list.
-            //
-            // If this side effect is problematic, it can be resolved as follows:
+            // out the entire tree structure down to the leaves.  Previously, the employee.DirectReports property was null; now it's a list.  If this 
+            // side effect is problematic, it can be resolved by adding this line here:
             //
             //      employee.DirectReports = null;
             //
-            // If that is the case, a unit test should be added to cover that modification.
+            // If this is added, a unit test should be added to cover that modification.
 
 
             // Assemble the response object
